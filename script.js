@@ -79,7 +79,7 @@ class Horse {
 class RaceManager {
     constructor() {
         this.horses = [];
-        this.trackLength = 5000; // arbitrary units
+        this.trackLength = 10000; // arbitrary units
         this.timer = 0;
         this.isActive = false;
         this.terrain = 'grass';
@@ -265,7 +265,7 @@ class Game {
         this.setupRaceTrack();
 
         this.manager.setupRace(this.horses, this.currentTerrain);
-        this.lastTime = performance.now();
+        this.lastTime = 0;
         requestAnimationFrame((t) => this.gameLoop(t));
     }
 
@@ -288,7 +288,12 @@ class Game {
     }
 
     gameLoop(timestamp) {
-        const dt = (timestamp - this.lastTime) / 16.67; // Normalize to ~60fps
+        if (!this.lastTime) {
+            this.lastTime = timestamp;
+            requestAnimationFrame((t) => this.gameLoop(t));
+            return;
+        }
+        const dt = Math.min((timestamp - this.lastTime) / 16.67, 5);
         this.lastTime = timestamp;
 
         const finished = this.manager.update(dt);

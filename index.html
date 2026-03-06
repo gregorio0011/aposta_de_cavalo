@@ -50,7 +50,7 @@
         </section>
 
         <!-- Race Phase -->
-        <section id="race-screen" class="hidden">
+        <section id="race-screen">
             <div id="race-hud">
                 <div class="progress-bar-container">
                     <div id="global-progress"></div>
@@ -70,7 +70,7 @@
         </section>
 
         <!-- Result Screen -->
-        <section id="result-screen" class="hidden">
+        <section id="result-screen">
             <div class="result-card">
                 <h2 id="result-title">VENCEDOR!</h2>
                 <div class="winner-display">
@@ -167,7 +167,7 @@
         class RaceManager {
             constructor() {
                 this.horses = [];
-                this.trackLength = 5000; // arbitrary units
+                this.trackLength = 10000; // units
                 this.timer = 0;
                 this.isActive = false;
                 this.terrain = 'grass';
@@ -353,7 +353,7 @@
                 this.setupRaceTrack();
 
                 this.manager.setupRace(this.horses, this.currentTerrain);
-                this.lastTime = performance.now();
+                this.lastTime = 0; // Reset for animation frame
                 requestAnimationFrame((t) => this.gameLoop(t));
             }
 
@@ -376,7 +376,12 @@
             }
 
             gameLoop(timestamp) {
-                const dt = (timestamp - this.lastTime) / 16.67; // Normalize to ~60fps
+                if (!this.lastTime) {
+                    this.lastTime = timestamp;
+                    requestAnimationFrame((t) => this.gameLoop(t));
+                    return;
+                }
+                const dt = Math.min((timestamp - this.lastTime) / 16.67, 5); // Cap dt to avoid jumps
                 this.lastTime = timestamp;
 
                 const finished = this.manager.update(dt);
