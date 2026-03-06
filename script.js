@@ -281,7 +281,7 @@ class Game {
 
             div.innerHTML = `
                 <div class="horse-label">${horse.name}</div>
-                <div class="horse-sprite" style="background-image: url('assets/horses.png'); filter: hue-rotate(${index * 90}deg);"></div>
+                <div class="horse-sprite" style="background-image: url('assets/horses.png'); filter: hue-rotate(${index * 90}deg); background-size: 400% 100%; background-position: ${index * 33.3}% 0%;"></div>
             `;
             container.appendChild(div);
         });
@@ -312,7 +312,7 @@ class Game {
                 const centerOffset = trackWidth / 3;
 
                 // Calculate position relative to track and camera
-                const screenX = horse.distanceCovered - leader.distanceCovered + centerOffset;
+                const screenX = (horse.distanceCovered - leader.distanceCovered) * 2 + centerOffset;
                 el.style.left = `${screenX}px`;
             }
         });
@@ -336,6 +336,8 @@ class Game {
         document.getElementById('winner-name').textContent = winner.name;
         document.getElementById('winner-sprite').style.backgroundImage = `url('assets/horses.png')`;
         document.getElementById('winner-sprite').style.filter = `hue-rotate(${winner.id * 90}deg)`;
+        document.getElementById('winner-sprite').style.backgroundSize = '400% 100%';
+        document.getElementById('winner-sprite').style.backgroundPosition = `${winner.id * 33.3}% 0%`;
 
         if (winner === this.selectedHorse) {
             const odds = parseFloat(this.calculateOdds(winner));
